@@ -33,8 +33,8 @@ public class Command
     public Command(String firstWord, String secondWord, String thirdWord)
     {
         commandWord = firstWord;
-        secondWord = secondWord;
-        thirdWord = thirdWord;
+        this.secondWord = secondWord;
+        this.thirdWord = thirdWord;
     }
 
     /**

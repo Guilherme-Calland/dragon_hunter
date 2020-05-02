@@ -15,15 +15,15 @@ public class CommandWords
     private static final String[] validCommands = {
         "open", "feel", "take", "put", "read", "quit", "help", "back"
     };
-    /*
+    
     private static final String[] validSecondWords = {
-        "north", "south", "east", "west"
+        "north", "south", "east", "west", "goremack's", "silver", "harry"
     };
-
+    
     private static final String[] validThirdWords = {
-        "door"
+        "door", "sword", "dragon", "potter"
     };
-    */
+    
 
     /**
      * Constructor - initialise the command words.
@@ -46,25 +46,27 @@ public class CommandWords
         // if we get here, the string was not found in the commands
         return false;
     }
-    /*
+    
     public boolean isSecondWord(String aString)
     {
-        for(int i = 0; i< validSecondWords.length; i++) {
+        for(int i = 0; i < validSecondWords.length; i++) {
             if(validSecondWords[i].equals(aString))
                 return true;
         }
+        // if we get here, the string was not found in the commands
         return false;
     }
     
     public boolean isThirdWord(String aString)
     {
-        for(int i = 0; i< validThirdWords.length; i++) {
+        for(int i = 0; i < validThirdWords.length; i++) {
             if(validThirdWords[i].equals(aString))
                 return true;
         }
+        // if we get here, the string was not found in the commands
         return false;
     }
-    */
+    
 
     /**
      * Print all valid commands to System.out.

@@ -29,10 +29,7 @@ public class Game
     */
     public Game() 
     {
-        createRooms();
-        parser = new Parser();
-        items = new ArrayList< Item >();
-        swordOfGoremack = false;
+        createGame();     
     }
     
     private boolean hasSwordOfGoremack()
@@ -40,9 +37,14 @@ public class Game
         return swordOfGoremack;
     }
     
-    /**
-     * Create all the rooms and link their exits together.
-     */
+    private void createGame()
+    {
+        createRooms();
+        parser = new Parser();
+        items = new ArrayList< Item >();
+        swordOfGoremack = false;
+    }
+    
     private void createRooms()
     {
         Room hall, livingRoom, queenBedroom, kingBedroom, diningRoom, ballroom, kitchen, library, princeBedroom;
@@ -75,6 +77,10 @@ public class Game
         "It hates the royal family out of jealousy, it too wishes to be wealty and important.\n" + 
         "This monster has notoriously thick scales which can only be pierced by \nThe Sword of Goremack.");
         library.placeItem(bookOfDragon);
+        Item harryPotter = new Item("harry potter", "Book: Harry Potter and the Prisioner of Askaban");
+        harryPotter.setInformation("You sit in the corner and read an entire Harry Potter book.\n"+
+        "It takes 12 hours, the prince is fine but hurry.");
+        library.placeItem(harryPotter);
         
         //king's bedroom
         kingBedroom.setExit("west door", ballroom);
@@ -123,13 +129,14 @@ public class Game
         printWelcome();
         // Enter the main command loop.  Here we repeatedly read commands and
         // execute them until the game is over.
-                
+        
         boolean finished = false;
-        while (! finished) {
+        
+        while (!finished) {
             Command command = parser.getCommand();
             finished = processCommand(command);
         }
-        System.out.println("Congratulations, the quest is over, you are a true hero. Goodbye");
+        
     }
     
     /**
@@ -139,7 +146,10 @@ public class Game
     {
         System.out.println();
         System.out.println("Welcome to the Dragon Hunter!");
-        System.out.println("Dragon Hunter is a new, incredibly boring adventure game.");
+        System.out.println("You are a warrior princess and you have been sent into a castle\n" + 
+        "to kill the dragon that's keeping the prince hostage. The dragon is hiding in one of\n" + 
+        "the rooms of the castle and carrying the scared prince with him wrapped around his tail.\n" + 
+        "Good Luck!");
         System.out.println("Type 'help' if you need help.");
         System.out.println();
         System.out.println(currentRoom.getLongDescription());
@@ -214,32 +224,9 @@ public class Game
             return;
         }
         
-        String secondWord = command.getSecondWord();
-        
-        if(
-            !(
-                secondWord.equals("north") ||
-                secondWord.equals("south") ||
-                secondWord.equals("east")  ||
-                secondWord.equals("west") 
-            ) 
-        )
-        {
-            System.out.println("Invalid command.");
-            return;
-        } 
-        
         if (!command.hasThirdWord())
         {
-            System.out.println("Open " + secondWord + " what?");
-            return;
-        }
-        
-        String thirdWord = command.getThirdWord();
-        
-        if( !thirdWord.equals("door") )
-        {
-            System.out.println("Only doors can be opened.");
+            System.out.println("Invalid command.");
             return;
         }
         
@@ -252,8 +239,56 @@ public class Game
         }
         else {
             currentRoom = nextRoom;
+            if(currentRoom.hasDragon())
+            {
+                for(Item item : items)
+                {
+                    if (item.getName().equals("sword of goremack"))
+                    {
+                        this.swordOfGoremack = true;
+                    }
+                }
+                if(!swordOfGoremack)
+                {
+                    showLosingText();
+                    restart();
+                } 
+                else 
+                {
+                    showWinningText();
+                    currentRoom.setDragon(false);
+                }
+                
+                return;
+            }
+            
             System.out.println(currentRoom.getLongDescription());
         }
+    }
+    
+    private void showLosingText()
+    {
+        System.out.println("You encounter a fire breathing dragon!\n"+
+        "The beast shoots fire at you. You are dead. Game Over.\n");
+    }
+    
+    private void showWinningText()
+    {
+        System.out.println("You encounter a fire breathing dragon!\n" +
+        "The beast speaks.\n\n" + 
+        "Silver Dragon: Why have you come here?\n\n" +
+        "Warrior Princess: I've come to kill you dragon.\n\n" +
+        "Silver Dragon: Hahahahahaha, many have tried, all met a fiery grave.\n\n" +
+        "Prince: Help me!\n\n" +
+        "You pull out the Sword of Goremack.\n\n" +
+        "Silver Dragon: What? No? Impossible!\n\n" + 
+        "Prince: I have no ideia what's going on.\n\n" +
+        "Warrior Princess: Prepare to die!\n\n" +
+        "An epic battle soon ensued, o man, if only you could see it,\n" +
+        "such an awesome freaking battle, wow. You killed the dragon, saved the day.\n" +
+        "Congratulations, the prince is saved, you are a true hero.\n\n" + 
+        "Your quest is over, but feel free to walk around the castle");
+        
     }
     
     private void feelDoor(Command command)
@@ -263,33 +298,10 @@ public class Game
             System.out.println("Feel what?");
             return;
         }
-        
-        String secondWord = command.getSecondWord();
-        
-        if(
-            !(
-                secondWord.equals("north") ||
-                secondWord.equals("south") ||
-                secondWord.equals("east")  ||
-                secondWord.equals("west") 
-            )
-        )
-        {
-            System.out.println("Invalid command.");
-            return;
-        } 
-        
+       
         if (!command.hasThirdWord())
         {
-            System.out.println("Feel " + secondWord + " what?");
-            return;
-        }
-        
-        String thirdWord = command.getThirdWord();
-        
-        if( !thirdWord.equals("door") )
-        {
-            System.out.println("Invalid command.\nYou may feel doors if you like.");
+            System.out.println("Invalid command.");
             return;
         }
         
@@ -301,7 +313,7 @@ public class Game
         {
             System.out.println("There is no door!");
         }
-        else if ( nextRoom.getDragon() )
+        else if ( nextRoom.hasDragon() )
         {
             System.out.println("The door feels warm.");
         } 
@@ -366,6 +378,10 @@ public class Game
             {
                 output += "silver dragon | "; 
             }
+            if( books.containsKey("harry potter") )
+            {
+                output += "harry potter | "; 
+            }
             System.out.println( output );
             return;
         } 
@@ -392,13 +408,16 @@ public class Game
     {
         
     }
-   
+    
+    private void restart()
+    {
+        createGame();
+        printWelcome();
+    }
+    
     private boolean quit(Command command) 
     {
-            
         
-        
-            
         if(command.hasSecondWord()) {
             System.out.println("Quit what?");
             return false;

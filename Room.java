@@ -43,7 +43,7 @@ public class Room
         this.dragon = hasDragon;
     }
     
-    public boolean getDragon()
+    public boolean hasDragon()
     {
         return this.dragon;
     }

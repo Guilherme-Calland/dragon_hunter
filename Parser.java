@@ -59,10 +59,18 @@ public class Parser
         // Now check whether this word is known. If so, create a command
         // with it. If not, create a "null" command (for unknown command).
         if(commands.isCommand(word1)) {
-            return new Command(word1, word2, word3);
+            if(commands.isSecondWord(word2)){
+                if(commands.isThirdWord(word3)){        
+                    return new Command(word1, word2, word3);
+                }else {
+                    return new Command(word1, word2, null);
+                }
+            }else  {
+                return new Command(word1, null, null);
+            }
         }
         else {
-            return new Command(null, word2, word3); 
+            return new Command(null, null, null); 
         }
     }
 
