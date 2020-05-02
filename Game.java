@@ -23,6 +23,7 @@ public class Game
     private Room currentRoom;
     private Stack< Item > items;
     private boolean swordOfGoremack;
+    private Stack< PlayerState > playerStates;
     
     /**
     * Create the game and initialise its internal map.
@@ -43,6 +44,7 @@ public class Game
         parser = new Parser();
         items = new Stack< Item >();
         swordOfGoremack = false;
+        
     }
     
     private void createRooms()
