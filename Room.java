@@ -114,7 +114,7 @@ public class Room
     
     public Item takeItem()
     {
-        if(items.size() > 0)
+        if(!items.empty())
         {
             return items.pop();
         }
@@ -125,7 +125,7 @@ public class Room
     {
         String output = "";
         
-        if(items.size() == 0)
+        if(items.empty())
         {
             output = "This room is empty.";
             return output;
