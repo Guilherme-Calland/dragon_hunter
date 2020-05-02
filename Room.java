@@ -20,7 +20,7 @@ public class Room
 {
     private String description;
     private HashMap<String, Room> exits;
-    private ArrayList<Item> items;
+    private Stack<Item> items;
     private boolean dragon;
     
 
@@ -34,7 +34,7 @@ public class Room
     {
         this.description = description;
         exits = new HashMap<>();
-        items = new ArrayList<Item>();
+        items = new Stack<Item>();
         dragon = false;
     }
     
@@ -109,16 +109,14 @@ public class Room
     
     public void placeItem(Item item)
     {
-        items.add(item);
+        items.push(item);
     }
     
     public Item takeItem()
     {
         if(items.size() > 0)
         {
-            Item tempItem = items.get(0);
-            items.remove(0);
-            return tempItem;
+            return items.pop();
         }
         return null;
     }

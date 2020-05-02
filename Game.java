@@ -21,7 +21,7 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
-    private ArrayList< Item > items;
+    private Stack< Item > items;
     private boolean swordOfGoremack;
     
     /**
@@ -41,7 +41,7 @@ public class Game
     {
         createRooms();
         parser = new Parser();
-        items = new ArrayList< Item >();
+        items = new Stack< Item >();
         swordOfGoremack = false;
     }
     
@@ -330,7 +330,7 @@ public class Game
         {
             System.out.println("Nothing to take.");
         } else {
-            items.add( item );
+            items.push( item );
             System.out.println("You have taken the " + item.getDescription());
         }  
     }
@@ -341,9 +341,8 @@ public class Game
         {
             System.out.println("Nothing to put.");
         } else {
-            Item item = items.get(0);
+            Item item = items.pop();
             currentRoom.placeItem(item);
-            items.remove(0);
             System.out.println("You have put the " + item.getDescription()
             + " in " + currentRoom.getShortDescription() );
         }  
