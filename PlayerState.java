@@ -14,8 +14,11 @@ public class PlayerState
     /**
      * Constructor for objects of class PlayerState
      */
-    public PlayerState()
-    {}
+    public PlayerState(Room currentRoom,Stack< Item > items)
+    {
+        this.currentRoom = currentRoom;
+        this.items = items;
+    }
     
     public Room getCurrentRoom()
     {

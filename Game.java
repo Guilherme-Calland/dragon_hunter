@@ -40,11 +40,12 @@ public class Game
     
     private void createGame()
     {
-        createRooms();
         parser = new Parser();
         items = new Stack< Item >();
         swordOfGoremack = false;
-        
+        playerStates = new Stack< PlayerState >();
+        createRooms();
+        play();
     }
     
     private void createRooms()
@@ -118,8 +119,9 @@ public class Game
         " \nForged by the legendary warrior Goremack, it has been \nused to slay all sorts of diferent monsters." +
         " \nLegend says only the worthy can wield it.");
         kitchen.placeItem( bookOfGoremack );
-       
-        currentRoom = hall;  // start in the main hall
+        
+        currentRoom = hall; //start in the main hall
+        playerStates.push( new PlayerState(currentRoom, items) );
     }
     
     
@@ -194,6 +196,8 @@ public class Game
         }else if (commandWord.equals("back")) {
             back();
         }
+        
+        playerStates.push(new PlayerState(currentRoom, items));
         // else command not recognised.
         return wantToQuit;
     }
@@ -407,7 +411,11 @@ public class Game
     */
     private void back()
     {
-        
+        playerStates.pop();
+        PlayerState previousState = playerStates.pop();
+        playerStates.push(previousState);
+        this.currentRoom = previousState.getCurrentRoom();
+        this.items = previousState.getItems();
     }
     
     private void restart()
