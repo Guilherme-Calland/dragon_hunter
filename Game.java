@@ -44,6 +44,7 @@ public class Game
         items = new Stack< Item >();
         swordOfGoremack = false;
         playerStates = new Stack< PlayerState >();
+        playerStates.push( new PlayerState(currentRoom, items) );
         createRooms();
         play();
     }
@@ -121,7 +122,6 @@ public class Game
         kitchen.placeItem( bookOfGoremack );
         
         currentRoom = hall; //start in the main hall
-        playerStates.push( new PlayerState(currentRoom, items) );
     }
     
     
@@ -174,6 +174,14 @@ public class Game
         }
         
         String commandWord = command.getCommandWord();
+        
+        if (commandWord.equals("back")) {
+            back();
+            return wantToQuit;
+        }
+        
+        playerStates.push(new PlayerState(currentRoom, items));
+
         if (commandWord.equals("help")) {
             printHelp();
         }
@@ -193,11 +201,9 @@ public class Game
             putItem();
         }else if (commandWord.equals("read")) {
             readBook(command);
-        }else if (commandWord.equals("back")) {
-            back();
         }
         
-        playerStates.push(new PlayerState(currentRoom, items));
+        
         // else command not recognised.
         return wantToQuit;
     }
@@ -411,11 +417,22 @@ public class Game
     */
     private void back()
     {
-        playerStates.pop();
         PlayerState previousState = playerStates.pop();
-        playerStates.push(previousState);
         this.currentRoom = previousState.getCurrentRoom();
         this.items = previousState.getItems();
+        
+        System.out.println(currentRoom.getLongDescription());
+        String output = "These are your current items: | ";
+        if(items.empty())
+        {
+            System.out.println("You are not holding any items.");
+            return;
+        }
+        for(Item item : items)
+        {
+            output += item.getDescription()+ " | "; 
+        }
+        System.out.println(output);
     }
     
     private void restart()
