@@ -66,6 +66,11 @@ public class Room
     {
         return description;
     }
+    
+    public Stack < Item > getItems()
+    {
+        return items;
+    }
 
     /**
      * Return a description of the room in the form:

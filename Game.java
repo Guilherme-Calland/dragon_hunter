@@ -44,7 +44,6 @@ public class Game
         items = new Stack< Item >();
         swordOfGoremack = false;
         playerStates = new Stack< PlayerState >();
-        playerStates.push( new PlayerState(currentRoom, items) );
         createRooms();
         play();
     }
@@ -122,6 +121,8 @@ public class Game
         kitchen.placeItem( bookOfGoremack );
         
         currentRoom = hall; //start in the main hall
+        
+        playerStates.push( new PlayerState(currentRoom, items) ); //push the state to a stack
     }
     
     
@@ -177,34 +178,25 @@ public class Game
         
         if (commandWord.equals("back")) {
             back();
-            return wantToQuit;
-        }
-        
-        playerStates.push(new PlayerState(currentRoom, items));
-
-        if (commandWord.equals("help")) {
+        }else if (commandWord.equals("help")) {
             printHelp();
-        }
-        else if (commandWord.equals("open")) {
+        }else if (commandWord.equals("feel")) {
+            feelDoor(command);
+        }else if (commandWord.equals("read")) {
+            readBook(command);
+        }else if (commandWord.equals("open")) {
             goRoom(command);
         }
         else if (commandWord.equals("quit")) {
             wantToQuit = quit(command);
-        }
-        else if (commandWord.equals("feel")) {
-            feelDoor(command);
         }
         else if(commandWord.equals("take")) {
             takeItem();
         }
         else if(commandWord.equals("put")) {
             putItem();
-        }else if (commandWord.equals("read")) {
-            readBook(command);
         }
         
-        
-        // else command not recognised.
         return wantToQuit;
     }
     
@@ -249,7 +241,12 @@ public class Game
         if (nextRoom == null) {
             System.out.println("There is no door!");
         }
-        else {
+        else
+        {
+            
+            playerStates.push(new PlayerState(currentRoom, items));
+            //puts a new state on the stack for 'back' method
+            
             currentRoom = nextRoom;
             if(currentRoom.hasDragon())
             {
@@ -275,6 +272,8 @@ public class Game
             }
             
             System.out.println(currentRoom.getLongDescription());
+            
+            
         }
     }
     
@@ -337,14 +336,17 @@ public class Game
             
     private void takeItem()
     {
-        Item item = currentRoom.takeItem();
-        if(item == null)
+        if(currentRoom.getItems().empty())
         {
             System.out.println("Nothing to take.");
-        } else {
+        }
+        else
+        {
+            // playerStates.push( new PlayerState(currentRoom, items) );
+            Item item = currentRoom.takeItem();
             items.push( item );
             System.out.println("You have taken the " + item.getDescription());
-        }  
+        }
     }
     
     private void putItem()
@@ -353,6 +355,7 @@ public class Game
         {
             System.out.println("Nothing to put.");
         } else {
+            // playerStates.push(new PlayerState(currentRoom, items));
             Item item = items.pop();
             currentRoom.placeItem(item);
             System.out.println("You have put the " + item.getDescription()
@@ -419,20 +422,23 @@ public class Game
     {
         PlayerState previousState = playerStates.pop();
         this.currentRoom = previousState.getCurrentRoom();
-        this.items = previousState.getItems();
-        
         System.out.println(currentRoom.getLongDescription());
-        String output = "These are your current items: | ";
+        
+        /*
+        this.items = previousState.getItems();
+        String output = "";
         if(items.empty())
         {
             System.out.println("You are not holding any items.");
             return;
         }
         for(Item item : items)
-        {
-            output += item.getDescription()+ " | "; 
+        {   output += "These are your current items: | ";
+            output += item.getDescription() + " | "; 
         }
         System.out.println(output);
+        */
+        
     }
     
     private void restart()
